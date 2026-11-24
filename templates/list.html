@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% block body %}<h2>{{ m.title }}</h2>
+{% if canw %}<form method="post" action="{{ url_for('add', mod=mod) }}" class="card formgrid">
+{% for c, label, kind, extra in m.fields %}
+<label>{{ label }}{% if c in m.get('optional', []) %} <i>(optional)</i>{% endif %}
+{% if kind == 'select' %}<select name="{{ c }}">{% for o in extra %}<option>{{ o }}</option>{% endfor %}</select>
+{% elif kind == 'fk' %}<select name="{{ c }}"><option value="">--</option>{% for i, l in fk[c].items() %}<option value="{{ i }}">{{ l }}</option>{% endfor %}</select>
+{% elif kind == 'num' %}<input name="{{ c }}" type="number" step="any">
+{% elif kind == 'date' %}<input name="{{ c }}" type="date" value="{{ today }}">
+{% else %}<input name="{{ c }}" {% if c == 'password' %}type="password"{% endif %}>{% endif %}</label>{% endfor %}
+<button>Add</button></form>{% endif %}
+<div class="card scroll"><table><tr><th>#</th>{% for c, label, kind, extra in m.fields if c != 'password' %}<th>{{ label }}</th>{% endfor %}<th></th></tr>
+{% for r in rows %}<tr><td>{{ r.id }}</td>
+{% for c, label, kind, extra in m.fields if c != 'password' %}<td>
+{% if kind == 'fk' %}{{ fk[c].get(r[c], '') }}
+{% elif canw and c in m.get('inline', []) %}<form method="post" action="{{ url_for('update', mod=mod, rid=r.id) }}" class="inl" id="f{{ r.id }}{{ c }}">
+{% if kind == 'select' %}<select name="{{ c }}" onchange="this.form.submit()">{% for o in extra %}<option {{ 'selected' if o == r[c] }}>{{ o }}</option>{% endfor %}</select>
+{% else %}<input name="{{ c }}" type="number" step="any" value="{{ r[c] }}" onchange="this.form.submit()">{% endif %}</form>
+{% else %}{{ r[c] if r[c] is not none else '' }}{% endif %}</td>{% endfor %}
+<td>{% if canw and mod == 'users' and r.id != session.uid %}<form method="post" action="{{ url_for('delete_user', rid=r.id) }}"><button class="del">Delete</button></form>
+{% elif canw and mod not in ('inventory','inspections','users') %}<form method="post" action="{{ url_for('delete', mod=mod, rid=r.id) }}" onsubmit="return confirm('Delete this record?')"><button class="del">Delete</button></form>{% endif %}</td></tr>
+{% else %}<tr><td colspan="20" class="muted">No records yet.</td></tr>{% endfor %}</table></div>{% endblock %}

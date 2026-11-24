@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block body %}<h2>Profitability Analysis</h2>
+<div class="kpis"><div class="card kpi"><div class="muted">Total revenue</div><div class="big">{{ '%.2f'|format(rev) }}</div></div>
+<div class="card kpi"><div class="muted">Total expenses</div><div class="big">{{ '%.2f'|format(exp) }}</div></div>
+<div class="card kpi"><div class="muted">Net profit</div><div class="big">{{ '%.2f'|format(rev-exp) }}</div></div></div>
+<div class="card scroll"><h3>Per order</h3><table><tr><th>Order</th><th>Customer</th><th>Product</th><th>Qty</th><th>Status</th><th>Revenue</th><th>Order expenses</th><th>Estimated product cost</th><th>Profit (revenue - exp - est. cost)</th></tr>
+{% for r in rows %}<tr><td>#{{ r.id }}</td><td>{{ r.customer }}</td><td>{{ r.product }}</td><td>{{ r.qty }}</td><td>{{ r.status }}</td>
+<td>{{ '%.2f'|format(r.revenue) }}</td><td>{{ '%.2f'|format(r.expenses) }}</td><td>{{ '%.2f'|format(r.est_cost) }}</td>
+<td><b>{{ '%.2f'|format(r.revenue - r.expenses - r.est_cost) }}</b></td></tr>{% else %}<tr><td colspan="9" class="muted">No orders yet.</td></tr>{% endfor %}</table>
+<p><a href="/export/profitability.csv">Download CSV</a></p></div>{% endblock %}

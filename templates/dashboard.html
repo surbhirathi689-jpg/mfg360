@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block body %}<h2>Dashboard</h2>
+<div class="kpis">{% for n, v in k.items() %}<div class="card kpi"><div class="muted">{{ n }}</div><div class="big">{{ v }}</div></div>{% endfor %}</div>
+{% set mx = [rev, exp, 1]|max %}
+<div class="card"><h3>Revenue vs Expenses</h3>
+<div class="bar"><span style="width:{{ 100*rev/mx }}%" class="g">Revenue {{ '%.2f'|format(rev) }}</span></div>
+<div class="bar"><span style="width:{{ 100*exp/mx }}%" class="r">Expenses {{ '%.2f'|format(exp) }}</span></div></div>
+<div class="card"><h3>Alerts ({{ alerts|length }})</h3>
+{% for t, msg in alerts %}<div class="alert"><b>{{ t }}</b> — {{ msg }}</div>{% else %}<p class="muted">No active alerts.</p>{% endfor %}</div>{% endblock %}

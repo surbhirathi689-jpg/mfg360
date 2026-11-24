@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block body %}<h2>Reports (CSV export)</h2>
+<div class="card"><p class="muted">Open in Excel. Orders, production, inventory, quality, expenses, sales and profitability reports.</p><ul>
+{% for n in names %}<li><a href="/export/{{ n }}.csv">{{ MODS[n].title }}</a></li>{% endfor %}
+{% if session.role in ('admin','management','finance') %}<li><a href="/export/profitability.csv">Profitability</a></li>{% endif %}</ul></div>{% endblock %}

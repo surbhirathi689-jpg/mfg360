@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MFG360</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body>{% if session.uid %}
+<nav><a class="brand" href="/">MFG360</a>
+{% for k, m in MODS.items() if can(k) %}<a href="{{ url_for('listing', mod=k) }}">{{ m.title }}</a>{% endfor %}
+{% if session.role in ('admin','management','finance') %}<a href="/profitability">Profitability</a>{% endif %}
+<a href="/reports">Reports</a><span class="sp"></span><span class="who">{{ session.user }} ({{ session.role }})</span>
+<a href="/logout">Logout</a></nav>{% endif %}
+<main>{% with msgs = get_flashed_messages(with_categories=true) %}{% for c, t in msgs %}<div class="flash {{ c }}">{{ t }}</div>{% endfor %}{% endwith %}
+{% block body %}{% endblock %}</main></body></html>
